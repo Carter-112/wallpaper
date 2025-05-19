@@ -1,12 +1,18 @@
 // Initialize Three.js Scene
 let scene, camera, renderer;
 let iceberg;
+let rainParticles;
 let clock = new THREE.Clock();
 
 // Water drops variables
 const waterDropsContainer = document.querySelector('.water-drops');
 const dropInterval = 300; // ms between drops
 let lastDropTime = 0;
+
+// Rain particles variables
+const RAIN_COUNT = 1500;
+const RAIN_SIZE = 0.05;
+const RAIN_COLOR = 0x7fcdff;
 
 // Check if user is on mobile
 const isMobile = window.innerWidth <= 768;
@@ -54,6 +60,9 @@ function init() {
     
     // Create iceberg
     createIceberg();
+    
+    // Create rain
+    createRain();
     
     // Add event listeners
     window.addEventListener('resize', onWindowResize);
@@ -109,6 +118,87 @@ function createIceberg() {
     
     // Add melting animation
     animateMelting();
+}
+
+// Create rain particles
+function createRain() {
+    // Create rain geometry
+    const rainGeometry = new THREE.BufferGeometry();
+    const rainPositions = new Float32Array(RAIN_COUNT * 3); // 3 values per vertex (x, y, z)
+    const rainSizes = new Float32Array(RAIN_COUNT);
+    const rainVelocities = new Float32Array(RAIN_COUNT);
+    
+    // Set positions and sizes for rain particles
+    for (let i = 0; i < RAIN_COUNT; i++) {
+        const i3 = i * 3;
+        
+        // Random position in a dome shape above the iceberg
+        const radius = 5;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.random() * Math.PI * 0.5;
+        
+        rainPositions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+        rainPositions[i3 + 1] = radius * Math.cos(phi) + 2; // +2 to position above
+        rainPositions[i3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
+        
+        // Random size
+        rainSizes[i] = RAIN_SIZE * (0.7 + Math.random() * 0.6);
+        
+        // Random velocity
+        rainVelocities[i] = 0.02 + Math.random() * 0.03;
+    }
+    
+    // Add attributes to geometry
+    rainGeometry.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
+    rainGeometry.setAttribute('size', new THREE.BufferAttribute(rainSizes, 1));
+    
+    // Store velocities for animation
+    rainGeometry.userData = { velocities: rainVelocities };
+    
+    // Create rain material
+    const rainMaterial = new THREE.PointsMaterial({
+        color: RAIN_COLOR,
+        size: RAIN_SIZE,
+        transparent: true,
+        opacity: 0.6,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
+    
+    // Create rain particles
+    rainParticles = new THREE.Points(rainGeometry, rainMaterial);
+    scene.add(rainParticles);
+}
+
+// Update rain particles
+function updateRain() {
+    if (!rainParticles) return;
+    
+    const positions = rainParticles.geometry.attributes.position.array;
+    const velocities = rainParticles.geometry.userData.velocities;
+    const count = positions.length / 3;
+    
+    // Update each rain particle
+    for (let i = 0; i < count; i++) {
+        const i3 = i * 3;
+        
+        // Move down by velocity
+        positions[i3 + 1] -= velocities[i];
+        
+        // Reset if below a certain point
+        if (positions[i3 + 1] < -5) {
+            const radius = 5;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.random() * Math.PI * 0.5;
+            
+            positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+            positions[i3 + 1] = radius * Math.cos(phi) + 2;
+            positions[i3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
+        }
+    }
+    
+    // Update buffer
+    rainParticles.geometry.attributes.position.needsUpdate = true;
 }
 
 // Animate the iceberg melting
@@ -223,6 +313,9 @@ function animate() {
     if (iceberg) {
         iceberg.rotation.y += 0.002;
     }
+    
+    // Update rain particles
+    updateRain();
     
     // Create water drops at intervals - more frequent on mobile
     const interval = isMobile ? 200 : 300;
