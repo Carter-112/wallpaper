@@ -1,0 +1,76 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(to bottom, #001f3f, #000c1b);
+    overflow: hidden;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.water-drops {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.drop {
+    position: absolute;
+    background: radial-gradient(ellipse at center, rgba(127, 205, 255, 0.7) 0%, rgba(127, 205, 255, 0) 70%);
+    border-radius: 50%;
+    transform-origin: center bottom;
+    animation: fall linear forwards;
+}
+
+@keyframes fall {
+    0% {
+        transform: scale(0);
+        opacity: 0.8;
+    }
+    80% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid rgba(127, 205, 255, 0.5);
+    transform: scale(0);
+    animation: ripple 1s linear forwards;
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+} 
