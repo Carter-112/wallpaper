@@ -1,14 +1,14 @@
 # Melting Iceberg Animation
 
-A simple website that shows a blue iceberg melting with water dripping, created using Three.js and GSAP.
+A mobile-optimized website that shows a blue iceberg at the top of the screen with water dripping down, created using Three.js and GSAP.
 
 ## Features
 
-- 3D iceberg rendered with Three.js
-- Realistic melting animation effect
+- 3D blue iceberg rendered with Three.js positioned at the top of the screen
+- Icicle-like shape optimized for vertical viewing
 - Water droplets falling from the iceberg
 - Ripple effects when droplets hit the bottom
-- Responsive design
+- Mobile-first responsive design
 
 ## Technologies Used
 
@@ -21,9 +21,9 @@ A simple website that shows a blue iceberg melting with water dripping, created 
 ## Getting Started
 
 1. Clone or download this repository
-2. Open `index.html` in a modern web browser
+2. Open `index.html` in a modern web browser (works best on mobile)
 3. Enjoy the animation!
 
 ## Browser Support
 
-This animation works best in modern browsers that support WebGL and modern CSS features. 
+This animation works best in modern browsers that support WebGL and modern CSS features. Optimized for mobile viewing. 

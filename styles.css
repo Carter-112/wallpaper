@@ -11,7 +11,8 @@ body {
     height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    position: relative;
 }
 
 .container {
@@ -72,5 +73,21 @@ canvas {
     to {
         transform: scale(4);
         opacity: 0;
+    }
+}
+
+/* Mobile-first responsive design */
+@media screen and (max-width: 768px) {
+    body {
+        align-items: flex-start;
+    }
+    
+    .drop {
+        width: 8px !important;
+        height: 8px !important;
+    }
+    
+    .ripple {
+        border-width: 1px;
     }
 } 
